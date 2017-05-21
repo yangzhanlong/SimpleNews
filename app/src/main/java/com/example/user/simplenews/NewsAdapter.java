@@ -12,6 +12,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
 
+import static com.example.user.simplenews.R.id.tv_title;
+
 public class NewsAdapter extends BaseAdapter{
     private Context mContext;
     private ArrayList<News> mList;
@@ -39,24 +41,32 @@ public class NewsAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = convertView;
-
-        if (view == null) {
-            view = View.inflate(mContext, R.layout.item, null);
+        ViewHolder holder;
+        if (convertView == null) {
+            convertView = View.inflate(mContext, R.layout.item, null);
+            holder = new ViewHolder();
+            holder.tv_title = (TextView) convertView.findViewById(tv_title);
+            holder.tv_des = (TextView) convertView.findViewById(R.id.tv_desc);
+            holder.draweeView = (SimpleDraweeView) convertView.findViewById(R.id.iv_icon);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
 
-        TextView tv_title = (TextView) view.findViewById(R.id.tv_title);
-        TextView tv_des = (TextView) view.findViewById(R.id.tv_desc);
-
         News news = (News) getItem(position);
-        tv_title.setText(news.getTitle());
-        tv_des.setText(news.getDescription());
+        holder.tv_title.setText(news.getTitle());
+        holder.tv_des.setText(news.getDescription());
 
         String imgurl = news.getImgurl();
         Uri uri = Uri.parse(imgurl);
-        SimpleDraweeView draweeView = (SimpleDraweeView) view.findViewById(R.id.iv_icon);
-        draweeView.setImageURI(uri);
+        holder.draweeView.setImageURI(uri);
 
-        return view;
+        return convertView;
+    }
+
+    static class ViewHolder {
+        TextView tv_title;
+        TextView tv_des;
+        SimpleDraweeView draweeView;
     }
 }
